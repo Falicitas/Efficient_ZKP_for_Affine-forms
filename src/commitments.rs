@@ -82,3 +82,16 @@ impl Commitments for [Scalar] {
         GroupElement::vartime_multiscalar_mul(self, &gens_n.G) + blind * gens_n.h
     }
 }
+
+pub struct DotProductProofGens {
+    n: usize,
+    pub gens_n: MultiCommitGens,
+    pub gens_1: MultiCommitGens,
+}
+
+impl DotProductProofGens {
+    pub fn new(n: usize, label: &[u8]) -> Self {
+        let (gens_n, gens_1) = MultiCommitGens::new(n + 1, label).split_at(n);
+        DotProductProofGens { n, gens_n, gens_1 }
+    }
+}

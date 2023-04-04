@@ -13,9 +13,9 @@ use merlin::Transcript;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct pi_1_Proof {}
+pub struct Pi_1_Proof {}
 
-impl pi_1_Proof {
+impl Pi_1_Proof {
     fn protocol_name() -> &'static [u8] {
         b"pi_1_proof"
     }
@@ -27,14 +27,14 @@ impl pi_1_Proof {
         phi: &Scalar,
         l_form_vec: &[Scalar],
     ) -> (
-        pi_1_Proof,
+        Pi_1_Proof,
         CompressedGroup,
         Scalar,
         Vec<Scalar>,
         Vec<Scalar>,
         Vec<GroupElement>,
     ) {
-        transcript.append_protocol_name(pi_1_Proof::protocol_name());
+        transcript.append_protocol_name(Pi_1_Proof::protocol_name());
 
         let mut G_hat = gens_n.G.clone();
         G_hat.push(gens_n.h);
@@ -59,6 +59,6 @@ impl pi_1_Proof {
             L_tilde.push(c_1 * L_hat[i]);
         }
 
-        (pi_1_Proof {}, P_hat, y_hat, L_tilde, z_hat, G_hat)
+        (Pi_1_Proof {}, P_hat, y_hat, L_tilde, z_hat, G_hat)
     }
 }
