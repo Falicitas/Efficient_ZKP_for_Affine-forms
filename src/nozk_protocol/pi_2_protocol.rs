@@ -24,8 +24,8 @@ impl Pi_2_Proof {
     }
 
     pub fn mod_prove(
-        gens_n: &MultiCommitGens,
-        gens_1: &MultiCommitGens,
+        // gens_n: &MultiCommitGens,
+        // gens_1: &MultiCommitGens,
         transcript: &mut Transcript,
         L_tilde: &[Scalar],
         z_hat: &[Scalar],

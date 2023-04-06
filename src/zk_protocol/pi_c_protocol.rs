@@ -57,6 +57,10 @@ impl Pi_c_Proof {
 
         //? Pi_1{}, P_hat, y_hat, L_tilde, z_hat, G_hat <------- gens_n, z_vec, phi, l_form_vec
 
+        let x = 3;
+        let ref mut qq = x;
+        *qq = 2;
+
         let gens_hat = MultiCommitGens {
             n: n + 1,
             G: G_hat_vec,

@@ -23,8 +23,8 @@ pub struct BulletReductionProof {
 impl BulletReductionProof {
     pub fn prove(
         transcript: &mut Transcript,
-        k: &GroupElement,
-        G_vec: &[GroupElement],
+        // k: &GroupElement,
+        // G_vec: &[GroupElement],
         z_vec: &[Scalar],
         L_vec: &[Scalar],
     ) -> BulletReductionProof {

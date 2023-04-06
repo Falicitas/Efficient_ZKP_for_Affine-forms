@@ -24,7 +24,7 @@ impl Pi_0_Proof {
     pub fn mod_prove(
         transcript: &mut Transcript,
         prover_random_tape: &mut RandomTape,
-        gens_n: &MultiCommitGens,
+        // gens_n: &MultiCommitGens,
         gamma: &Scalar,
         l_form_vec: &[Scalar],
         y: &Scalar,
