@@ -29,16 +29,13 @@ pub struct X {
     x_vec: Vec<Scalar>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Proof {}
-//TODO: add Pi_c_proof
-
 fn write_to_file<T: Serialize>(path: String, object: T) {
     fs::write(path, serde_json::to_string(&object).unwrap()).unwrap();
 }
 
 pub fn generator(suffix_path: String) {
     let infix_path = "1e9_10_".to_owned();
+    // Scalar range in [0,1e9), and n range in {10}
 
     let infix_suffix = infix_path + &suffix_path;
     let raw_file_path = "./random_data/raw_".to_owned() + &infix_suffix;

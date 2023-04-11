@@ -1,12 +1,12 @@
-use super::super::commitments::{DotProductProofGens, MultiCommitGens};
-use super::super::random::RandomTape;
-use super::super::transcript::ProofTranscript;
+use crate::commitments::{DotProductProofGens, MultiCommitGens};
 use crate::curve25519::errors::ProofVerifyError;
 use crate::curve25519::group::{CompressedGroup, CompressedGroupExt, GROUP_BASEPOINT};
 use crate::curve25519::scalar::Scalar;
 use crate::nozk_protocol::pi_1_protocol::Pi_1_Proof;
 use crate::nozk_protocol::pi_2_protocol::Pi_2_Proof;
+use crate::random::RandomTape;
 use crate::transcript;
+use crate::transcript::ProofTranscript;
 use crate::zk_protocol::pi_0_protocol::Pi_0_Proof;
 use merlin::Transcript;
 use serde::{Deserialize, Serialize};
@@ -75,5 +75,51 @@ impl Pi_c_Proof {
             P,
             P_hat,
         )
+    }
+
+    pub fn verify(
+        &self,
+        n: usize,
+        gens: &DotProductProofGens,
+        transcript: &mut Transcript,
+        l_vec: &[Scalar],
+        P: &CompressedGroup,
+        y: &Scalar,
+        P_hat: &CompressedGroup,
+    ) -> Result<(), ProofVerifyError> {
+        assert!(gens.gens_n.n >= n);
+        assert_eq!(l_vec.len(), n);
+
+        transcript.append_protocol_name(Pi_c_Proof::protocol_name());
+        let c_0 = self
+            .proof_0
+            .mod_verify(&gens.gens_n, transcript, &l_vec, &P, &y);
+
+        let y_hat = c_0 * y + self.proof_0.t;
+
+        let c_1 = self.proof_1.mod_verify(transcript, &P_hat, &y_hat);
+
+        let mut L_hat = l_vec.clone().to_vec();
+        L_hat.push(Scalar::zero());
+
+        let mut L_tilde: Vec<Scalar> = Vec::new();
+        for i in 0..L_hat.len() {
+            L_tilde.push(c_1 * L_hat[i]);
+        }
+
+        let Q = (self.proof_0.A.unpack()? + c_0 * P.unpack()? + c_1 * y_hat * gens.gens_1.G[0])
+            .compress();
+
+        let mut G_hat_vec = gens.gens_n.G.clone();
+        G_hat_vec.push(gens.gens_n.h);
+        let gens_hat = MultiCommitGens {
+            n: n + 1,
+            G: G_hat_vec,
+            h: GROUP_BASEPOINT,
+        };
+
+        return self
+            .proof_2
+            .mod_verify(n + 1, &gens_hat, &gens.gens_1, transcript, &L_tilde, &Q);
     }
 }

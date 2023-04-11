@@ -46,5 +46,24 @@ impl Pi_0_Proof {
         (Pi_0_Proof { A, t }, P, z, phi)
     }
 
-    //TODO: verify
+    pub fn mod_verify(
+        &self,
+        gens_n: &MultiCommitGens,
+        transcript: &mut Transcript,
+        a: &[Scalar],
+        P: &CompressedGroup,
+        y: &Scalar,
+    ) -> Scalar {
+        assert_eq!(gens_n.n, a.len());
+
+        transcript.append_protocol_name(Pi_0_Proof::protocol_name());
+        P.append_to_transcript(b"P", transcript);
+        y.append_to_transcript(b"y", transcript);
+        self.A.append_to_transcript(b"A", transcript);
+        self.t.append_to_transcript(b"t", transcript);
+
+        let c = transcript.challenge_scalar(b"c");
+        //?为什么要返回c
+        c
+    }
 }

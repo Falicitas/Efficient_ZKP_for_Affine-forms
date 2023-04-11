@@ -47,7 +47,9 @@ impl Pi_1_Proof {
 
         let y_hat = scalar_math::compute_linearform(&L_hat, &z_hat);
 
-        let P_hat = GroupElement::vartime_multiscalar_mul(&z_hat, &gens_n.G).compress();
+        assert_eq!(z_hat.len(), G_hat.len());
+
+        let P_hat = GroupElement::vartime_multiscalar_mul(&z_hat, &G_hat).compress();
 
         P_hat.append_to_transcript(b"P_hat", transcript);
         y_hat.append_to_transcript(b"y_hat", transcript);
@@ -60,5 +62,20 @@ impl Pi_1_Proof {
         }
 
         (Pi_1_Proof {}, P_hat, y_hat, L_tilde, z_hat, G_hat)
+    }
+
+    pub fn mod_verify(
+        &self,
+        transcript: &mut Transcript,
+        P_hat: &CompressedGroup,
+        y_hat: &Scalar,
+    ) -> Scalar {
+        transcript.append_protocol_name(Pi_1_Proof::protocol_name());
+        P_hat.append_to_transcript(b"P_hat", transcript);
+        y_hat.append_to_transcript(b"y_hat", transcript);
+
+        let c_1 = transcript.challenge_scalar(b"c_1");
+
+        c_1
     }
 }

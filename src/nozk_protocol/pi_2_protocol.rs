@@ -51,4 +51,34 @@ impl Pi_2_Proof {
             Q,
         )
     }
+
+    pub fn mod_verify(
+        &self,
+        n: usize,
+        gens_n: &MultiCommitGens,
+        gens_1: &MultiCommitGens,
+        transcript: &mut Transcript,
+        L_tilde: &[Scalar],
+        Q: &CompressedGroup,
+    ) -> Result<(), ProofVerifyError> {
+        assert!(gens_n.n >= n);
+        assert_eq!(L_tilde.len(), n);
+
+        transcript.append_protocol_name(Pi_2_Proof::protocol_name());
+        Q.append_to_transcript(b"Q", transcript);
+
+        match Q.unpack() {
+            Ok(Q) => {
+                return self.bullet_reduction_proof.verify(
+                    n,
+                    &L_tilde,
+                    transcript,
+                    &Q,
+                    &gens_1.G[0],
+                    &gens_n.G,
+                );
+            }
+            Err(r) => return Err(r),
+        }
+    }
 }

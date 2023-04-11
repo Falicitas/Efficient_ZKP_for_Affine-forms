@@ -10,41 +10,71 @@ use merlin::Transcript;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-#[allow(non_camel_case_types)]
 pub struct Pi_Affine_Proof {
     proof: Pi_c_Proof,
 }
-// different linear forms, same $\vec{x}$
+
 impl Pi_Affine_Proof {
     fn protocol_name() -> &'static [u8] {
-        b"affine form proof"
+        b"zk pi_affine proof"
     }
 
     pub fn prove(
-        gens: &DotProductProofGens, //? 外部
+        gens: &DotProductProofGens,
         transcript: &mut Transcript,
-        random_tape: &mut RandomTape,
+        prover_random_tape: &mut RandomTape,
         x_vec: &[Scalar],
         gamma: &Scalar,
-        l_matrix: &Vec<Vec<Scalar>>,
+        l_matric: &Vec<Vec<Scalar>>,
     ) -> (Pi_Affine_Proof, CompressedGroup, CompressedGroup, Scalar) {
         transcript.append_protocol_name(Pi_Affine_Proof::protocol_name());
 
         let n = x_vec.len();
-        let s = l_matrix.len();
+        let s = l_matric.len();
         assert_eq!(gens.gens_n.n, n);
 
-        //? ???????
         let rho = transcript.challenge_scalar(b"rho");
         let rho_vec = scalar_math::vandemonde_challenge_one(rho, s);
-        let l_matrix_t = scalar_math::matrix_transpose(&l_matrix);
-        let l_vec = scalar_math::matrix_vector_mul(&l_matrix_t, &rho_vec);
+        let l_matric_t = scalar_math::matrix_transpose(&l_matric);
+        let l_vec = scalar_math::matrix_vector_mul(&l_matric_t, &rho_vec);
 
         let y = scalar_math::compute_linearform(&l_vec, &x_vec);
 
-        let (proof, P, P_hat) =
-            Pi_c_Proof::prove(&gens, transcript, random_tape, x_vec, gamma, &l_vec, &y);
+        let (proof, P, P_hat) = Pi_c_Proof::prove(
+            &gens,
+            transcript,
+            prover_random_tape,
+            x_vec,
+            gamma,
+            &l_vec,
+            &y,
+        );
 
         (Pi_Affine_Proof { proof }, P, P_hat, y)
+    }
+
+    pub fn verify(
+        &self,
+        n: usize,
+        gens: &DotProductProofGens,
+        transcript: &mut Transcript,
+        l_matric: &Vec<Vec<Scalar>>,
+        P: &CompressedGroup,
+        y: &Scalar,
+        P_hat: &CompressedGroup,
+    ) -> Result<(), ProofVerifyError> {
+        assert!(gens.gens_n.n >= n);
+
+        transcript.append_protocol_name(Pi_Affine_Proof::protocol_name());
+
+        let s = l_matric.len();
+        let rho = transcript.challenge_scalar(b"rho");
+        let rho_vec = scalar_math::vandemonde_challenge_one(rho, s);
+        let l_matrix_t = scalar_math::matrix_transpose(&l_matric);
+        let l_vec = scalar_math::matrix_vector_mul(&l_matrix_t, &rho_vec);
+
+        return self
+            .proof
+            .verify(n, &gens, transcript, &l_vec, &P, &y, &P_hat);
     }
 }
