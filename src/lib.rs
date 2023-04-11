@@ -1,8 +1,8 @@
-// mod commitments;
-mod curve25519;
-// mod math;
-// mod nozk_protocol;
+mod commitments;
+pub mod curve25519;
+mod math;
+mod nozk_protocol;
 pub mod public_parameters;
-// mod random;
-// mod transcript;
-// mod zk_protocol;
+mod random;
+pub mod transcript;
+mod zk_protocol;

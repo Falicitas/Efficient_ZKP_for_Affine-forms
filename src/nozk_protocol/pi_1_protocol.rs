@@ -22,7 +22,7 @@ impl Pi_1_Proof {
 
     pub fn mod_prove(
         transcript: &mut Transcript,
-        // gens_n: &MultiCommitGens,
+        gens_n: &MultiCommitGens,
         z_vec: &[Scalar],
         phi: &Scalar,
         l_form_vec: &[Scalar],

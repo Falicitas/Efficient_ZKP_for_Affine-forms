@@ -21,7 +21,7 @@ impl Pi_Affine_Proof {
     }
 
     pub fn prove(
-        // gens: &DotProductProofGens, //? 外部
+        gens: &DotProductProofGens, //? 外部
         transcript: &mut Transcript,
         random_tape: &mut RandomTape,
         x_vec: &[Scalar],

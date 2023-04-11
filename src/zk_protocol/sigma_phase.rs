@@ -9,7 +9,7 @@ use merlin::Transcript;
 pub fn commit_phase(
     transcript: &mut Transcript,
     prover_random_tape: &mut RandomTape,
-    // gens_n: &MultiCommitGens,
+    gens_n: &MultiCommitGens,
     l_form_vec: &[Scalar],
 ) -> (CompressedGroup, Scalar, Vec<Scalar>, Scalar) {
     let n = l_form_vec.len();

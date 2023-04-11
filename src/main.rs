@@ -1,5 +1,5 @@
-use Efficient_ZKP_for_Affine_forms::public_parameters;
+// use Efficient_ZKP_for_Affine_forms::public_parameters;
 
 fn main() {
-    println!("{}", *public_parameters::Pub_Param_Affine_forms::DT);
+    // println!("{}", *public_parameters::Pub_Param_Affine_forms::A);
 }
