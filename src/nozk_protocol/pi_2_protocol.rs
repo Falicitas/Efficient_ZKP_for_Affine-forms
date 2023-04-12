@@ -1,5 +1,4 @@
-use super::super::commitments::{Commitments, DotProductProofGens, MultiCommitGens};
-use super::super::random::RandomTape;
+use super::super::commitments::MultiCommitGens;
 use super::super::transcript::{AppendToTranscript, ProofTranscript};
 use crate::curve25519::errors::ProofVerifyError;
 use crate::curve25519::group::{
@@ -7,9 +6,7 @@ use crate::curve25519::group::{
 };
 use crate::curve25519::scalar::Scalar;
 use crate::curve25519::scalar_math;
-use crate::math::Math;
 use crate::nozk_protocol::bullet_proof::BulletReductionProof;
-use crate::transcript;
 use merlin::Transcript;
 use serde::{Deserialize, Serialize};
 
@@ -32,9 +29,6 @@ impl Pi_2_Proof {
     ) -> (Pi_2_Proof, CompressedGroup) {
         transcript.append_protocol_name(Pi_2_Proof::protocol_name());
 
-        use std::time::Instant;
-        let now = Instant::now();
-
         let n = z_hat.len();
         assert_eq!(L_tilde.len(), n);
 
@@ -44,22 +38,6 @@ impl Pi_2_Proof {
         .compress();
 
         Q.append_to_transcript(b"Q", transcript);
-
-        //? >>>in------------------------------test running time-----------------------------------------------------
-        let duration = now.elapsed();
-        let (s, mut ms, mut us) = (
-            duration.as_secs(),
-            duration.as_millis(),
-            duration.as_micros(),
-        );
-        us -= ms * 1000;
-        ms -= s as u128 * 1000;
-        println!(
-            "Hi! before BP protocol running time: {} s {} ms {} us",
-            s, ms, us
-        );
-        let now = Instant::now();
-        //? <<out-------------------------------test running time----------------------------------------------------
 
         (
             Pi_2_Proof {

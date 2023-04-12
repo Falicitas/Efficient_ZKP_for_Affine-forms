@@ -19,7 +19,6 @@ pub fn commit_phase(
     let r_vec = prover_random_tape.random_vector(b"r_vec", n);
     let rho = prover_random_tape.random_scalar(b"rho");
     let A = r_vec.commit(&rho, gens_n).compress();
-    //TODO: check out if random_tape and commit can be optimized.
     let t = scalar_math::compute_linearform(&l_form_vec, &r_vec);
 
     A.append_to_transcript(b"A", transcript);
@@ -30,7 +29,6 @@ pub fn commit_phase(
 
 pub fn challenge_phase(transcript: &mut Transcript) -> Scalar {
     let c = transcript.challenge_scalar(b"c");
-    //TODO: internal implication need for check.
     c
 }
 

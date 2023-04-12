@@ -1,13 +1,9 @@
 use rand::rngs::OsRng;
 use rand::{CryptoRng, RngCore};
 use serde::{Deserialize, Serialize};
-use serde_json::Result;
 use std::fs;
 use Efficient_ZKP_for_Affine_forms::curve25519::scalar::Scalar;
 use Efficient_ZKP_for_Affine_forms::curve25519::scalar_math;
-// use Efficient_ZKP_for_Affine_forms::zk_protocol::pi_c_protocol;
-use merlin::Transcript;
-use Efficient_ZKP_for_Affine_forms::transcript::{AppendToTranscript, ProofTranscript};
 const MOD: u64 = 1_000_000_000;
 
 fn random_in_1e9<Rng: RngCore + CryptoRng>(rng: &mut Rng) -> u64 {
@@ -35,11 +31,8 @@ fn write_to_file<T: Serialize>(path: String, object: T) {
 
 pub fn generator(suffix_path: String) {
     let infix_path = "1e9_10_".to_owned();
-    // Scalar range in [0,1e9), and n range in {10}
-
     let infix_suffix = infix_path + &suffix_path;
     let raw_file_path = "./random_data/1e9_10/raw_".to_owned() + &infix_suffix;
-    // let dispose_file_path = "./random_data/1e9_10/dispose_".to_owned() + &infix_suffix;
     let private_file_path = "./random_data/1e9_10/private_".to_owned() + &infix_suffix;
     //? rust . + & + & + &
 
@@ -99,14 +92,6 @@ pub fn generator(suffix_path: String) {
         );
     }
 
-    // let rho = fs_transcript.challenge_scalar(b"rho");
-    // let rho_vec = scalar_math::vandemonde_challenge_one(rho, s);
-    // let l_hat_matrix_t = scalar_math::matrix_transpose(&m_hat_matric);
-    // let l_vec = scalar_math::matrix_vector_mul(&l_hat_matrix_t, &rho_vec);
-
-    // let y = scalar_math::compute_linearform(&l_vec, &x_hat_vec);
-    // assert_eq!(y, Scalar::zero());
-
     write_to_file(
         raw_file_path,
         Raw {
@@ -114,13 +99,6 @@ pub fn generator(suffix_path: String) {
             b_vec: b_vec.clone(),
         },
     );
-
-    // write_to_file(
-    //     dispose_file_path,
-    //     Dispose {
-    //         l_affine_vec: l_vec.clone(),
-    //     },
-    // );
 
     write_to_file(
         private_file_path,

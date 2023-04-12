@@ -1,6 +1,6 @@
 use super::super::random::RandomTape;
 use super::super::transcript::ProofTranscript;
-use crate::commitments::{Commitments, DotProductProofGens};
+use crate::commitments::DotProductProofGens;
 use crate::curve25519::errors::ProofVerifyError;
 use crate::curve25519::group::CompressedGroup;
 use crate::curve25519::scalar::Scalar;
@@ -42,21 +42,6 @@ impl Pi_Affine_Proof {
         let l_vec = scalar_math::matrix_vector_mul(&l_matric_t, &rho_vec);
 
         let y = scalar_math::compute_linearform(&l_vec, &x_vec);
-
-        //? >>>in-------------------------------test running time-----------------------------------------------------
-        let duration = now.elapsed();
-        let (s, mut ms, mut us) = (
-            duration.as_secs(),
-            duration.as_millis(),
-            duration.as_micros(),
-        );
-        us -= ms * 1000;
-        ms -= s as u128 * 1000;
-        println!(
-            "Hi! compressed L_vec running time: {} s {} ms {} us",
-            s, ms, us
-        );
-        //? <<out-------------------------------test running time-----------------------------------------------------
 
         let (proof, P, P_hat) = Pi_c_Proof::prove(
             &gens,

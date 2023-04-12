@@ -1,14 +1,8 @@
-use std::ops::Mul;
-
-use super::super::commitments::{Commitments, MultiCommitGens};
-use crate::curve25519::errors::ProofVerifyError;
-use crate::curve25519::group::{
-    CompressedGroup, CompressedGroupExt, GroupElement, VartimeMultiscalarMul,
-};
+use super::super::commitments::MultiCommitGens;
+use crate::curve25519::group::{CompressedGroup, GroupElement, VartimeMultiscalarMul};
 use crate::curve25519::scalar::Scalar;
 use crate::curve25519::scalar_math;
-use crate::transcript::{self, AppendToTranscript, ProofTranscript};
-use digest::generic_array::typenum::Gr;
+use crate::transcript::{AppendToTranscript, ProofTranscript};
 use merlin::Transcript;
 use serde::{Deserialize, Serialize};
 

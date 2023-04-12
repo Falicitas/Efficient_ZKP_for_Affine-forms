@@ -1,5 +1,3 @@
-use std::num::IntErrorKind;
-
 use crate::commitments::{DotProductProofGens, MultiCommitGens};
 use crate::curve25519::errors::ProofVerifyError;
 use crate::curve25519::group::{CompressedGroup, CompressedGroupExt, GROUP_BASEPOINT};
@@ -7,7 +5,6 @@ use crate::curve25519::scalar::Scalar;
 use crate::nozk_protocol::pi_1_protocol::Pi_1_Proof;
 use crate::nozk_protocol::pi_2_protocol::Pi_2_Proof;
 use crate::random::RandomTape;
-use crate::transcript;
 use crate::transcript::ProofTranscript;
 use crate::zk_protocol::pi_0_protocol::Pi_0_Proof;
 use merlin::Transcript;
@@ -57,57 +54,17 @@ impl Pi_c_Proof {
         );
         //? Pi_0{A, t}, P, z, phi <----- gens_n(g, h), gamma, l_vec, y, x_vec
 
-        //? >>>in------------------------------test running time-----------------------------------------------------
-        let duration = now.elapsed();
-        let (s, mut ms, mut us) = (
-            duration.as_secs(),
-            duration.as_millis(),
-            duration.as_micros(),
-        );
-        us -= ms * 1000;
-        ms -= s as u128 * 1000;
-        println!("Hi! Pi_0 running time: {} s {} ms {} us", s, ms, us);
-        let now = Instant::now();
-        //? <<out------------------------------test running time-----------------------------------------------------
-
         let (proof_1, P_hat, _y_hat, L_tilde, z_hat, G_hat_vec) =
             Pi_1_Proof::mod_prove(transcript, &gens.gens_n, &z_vec, &phi, &l_vec);
-
-        //? >>>in------------------------------test running time-----------------------------------------------------
-        let duration = now.elapsed();
-        let (s, mut ms, mut us) = (
-            duration.as_secs(),
-            duration.as_millis(),
-            duration.as_micros(),
-        );
-        us -= ms * 1000;
-        ms -= s as u128 * 1000;
-        println!("Hi! Pi_1 running time: {} s {} ms {} us", s, ms, us);
-        let now = Instant::now();
-        //? <<out-------------------------------test running time----------------------------------------------------
 
         let gens_hat = MultiCommitGens {
             n: n + 1,
             G: G_hat_vec,
             h: GROUP_BASEPOINT,
         };
-        //TODO: GROUP_BASEPOINT safe, probably.
 
         let (proof_2, _Q) =
             Pi_2_Proof::mod_prove(&gens_hat, &gens.gens_1, transcript, &L_tilde, &z_hat);
-
-        //? >>>in------------------------------test running time-----------------------------------------------------
-        let duration = now.elapsed();
-        let (s, mut ms, mut us) = (
-            duration.as_secs(),
-            duration.as_millis(),
-            duration.as_micros(),
-        );
-        us -= ms * 1000;
-        ms -= s as u128 * 1000;
-        println!("Hi! Pi_2 running time: {} s {} ms {} us", s, ms, us);
-        let now = Instant::now();
-        //? <<out-------------------------------test running time----------------------------------------------------
 
         (
             Pi_c_Proof {

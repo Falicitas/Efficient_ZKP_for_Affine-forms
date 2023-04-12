@@ -2,11 +2,8 @@ use super::super::commitments::{Commitments, MultiCommitGens};
 use super::super::random::RandomTape;
 use super::super::transcript::{AppendToTranscript, ProofTranscript};
 use super::sigma_phase;
-use crate::curve25519::errors::ProofVerifyError;
-use crate::curve25519::group::{CompressedGroup, CompressedGroupExt};
+use crate::curve25519::group::CompressedGroup;
 use crate::curve25519::scalar::Scalar;
-use crate::curve25519::scalar_math;
-use crate::transcript;
 use merlin::Transcript;
 use serde::{Deserialize, Serialize};
 
@@ -38,7 +35,6 @@ impl Pi_0_Proof {
 
         let (A, t, r_vec, rho) =
             sigma_phase::commit_phase(transcript, prover_random_tape, gens_n, l_form_vec);
-        //TODO: order of transcript?
         let c_0 = sigma_phase::challenge_phase(transcript);
 
         let (z, phi) = sigma_phase::response_phase(&c_0, x_vec, &r_vec, gamma, &rho);

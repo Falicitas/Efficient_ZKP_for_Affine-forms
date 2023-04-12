@@ -1,21 +1,14 @@
-use curve25519_dalek::ristretto::CompressedRistretto;
 use merlin::Transcript;
 use rand::rngs::OsRng;
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::fs;
 use Efficient_ZKP_for_Affine_forms::{
-    commitments::{Commitments, DotProductProofGens, MultiCommitGens},
-    curve25519::{
-        errors::ProofVerifyError,
-        group::{CompressedGroup, CompressedGroupExt, GROUP_BASEPOINT},
-        scalar::Scalar,
-        scalar_math,
-    },
-    nozk_protocol::{pi_1_protocol::Pi_1_Proof, pi_2_protocol::Pi_2_Proof},
+    commitments::{Commitments, DotProductProofGens},
+    curve25519::{group::CompressedGroup, scalar::Scalar},
     random::RandomTape,
     transcript::AppendToTranscript,
-    zk_protocol::{pi_0_protocol::Pi_0_Proof, pi_a_protocol::Pi_Affine_Proof},
+    zk_protocol::pi_a_protocol::Pi_Affine_Proof,
 };
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -1,23 +1,12 @@
-use crate::transcript::ProofTranscript;
-use curve25519_dalek::ristretto::CompressedRistretto;
 use merlin::Transcript;
-use rand::rngs::OsRng;
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::fs;
 use Efficient_ZKP_for_Affine_forms::{
-    commitments::{DotProductProofGens, MultiCommitGens},
-    curve25519::{
-        errors::ProofVerifyError,
-        group::{CompressedGroup, CompressedGroupExt, GROUP_BASEPOINT},
-        scalar::Scalar,
-        scalar_math,
-    },
-    nozk_protocol::{pi_1_protocol::Pi_1_Proof, pi_2_protocol::Pi_2_Proof},
-    random::RandomTape,
-    transcript,
+    commitments::DotProductProofGens,
+    curve25519::{group::CompressedGroup, scalar::Scalar},
     transcript::AppendToTranscript,
-    zk_protocol::{pi_0_protocol::Pi_0_Proof, pi_a_protocol::Pi_Affine_Proof},
+    zk_protocol::pi_a_protocol::Pi_Affine_Proof,
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -44,7 +33,7 @@ fn singleton_test(suffix_path: String) {
 
     let now = Instant::now();
 
-    let infix_path = "./random_data/1e9_100000_5".to_owned();
+    let infix_path = "./random_data/1e9_1000_5".to_owned();
 
     let raw_path = infix_path.to_owned() + &"/raw_".to_owned() + &suffix_path;
 
@@ -54,6 +43,7 @@ fn singleton_test(suffix_path: String) {
     let disk_proof: Proof_and_Commitments =
         serde_json::from_str(&fs::read_to_string(proof_path).unwrap()).unwrap();
 
+    //? >>>in-------------------------------test running time-----------------------------------------------------
     let duration = now.elapsed();
     let s = duration.as_secs();
     let mut ms = duration.as_millis();
@@ -61,9 +51,11 @@ fn singleton_test(suffix_path: String) {
     us -= ms * 1000;
     ms -= s as u128 * 1000;
     println!("Hi! input running time: {} s {} ms {} us", s, ms, us);
+    let now = Instant::now();
+    //? <<out-------------------------------test running time-----------------------------------------------------
 
     let (mut m_matric, b_vec) = (disk_raw.m_matric, disk_raw.b_vec.clone());
-    let (mut proof, mut P, mut P_hat, mut y) = (
+    let (proof, P, P_hat, y) = (
         disk_proof.proof,
         disk_proof.P,
         disk_proof.P_hat,
@@ -104,17 +96,21 @@ fn singleton_test(suffix_path: String) {
         )
         .is_ok());
 
+    //? >>>in-------------------------------test running time-----------------------------------------------------
     let duration = now.elapsed();
     let s = duration.as_secs();
     let mut ms = duration.as_millis();
     let mut us = duration.as_micros();
     us -= ms * 1000;
     ms -= s as u128 * 1000;
-    println!("Hi! overall running time: {} s {} ms {} us", s, ms, us);
+    println!("Hi! verify running time: {} s {} ms {} us", s, ms, us);
+    //? <<out-------------------------------test running time-----------------------------------------------------
 }
 
 fn main() {
     for i in 0..10 {
+        println!("----------------------------------------singleton_test----------------------------------------");
         singleton_test(i.to_string() + &".in".to_owned());
+        println!("test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured.");
     }
 }
