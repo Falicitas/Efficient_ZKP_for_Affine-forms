@@ -4,4 +4,4 @@ Current Progress:
 
 ![Current Progress](https://github.com/Falicitas/Efficient_ZKP_for_Affine-forms/blob/master/img/current%20progress%20graph.png)
 
-Lack of "Data specification", "API specification" doc.
+Lack of "Data specification", "API specification" doc. Almost stable version.
