@@ -32,6 +32,9 @@ impl Pi_2_Proof {
     ) -> (Pi_2_Proof, CompressedGroup) {
         transcript.append_protocol_name(Pi_2_Proof::protocol_name());
 
+        use std::time::Instant;
+        let now = Instant::now();
+
         let n = z_hat.len();
         assert_eq!(L_tilde.len(), n);
 
@@ -41,6 +44,22 @@ impl Pi_2_Proof {
         .compress();
 
         Q.append_to_transcript(b"Q", transcript);
+
+        //? >>>in------------------------------test running time-----------------------------------------------------
+        let duration = now.elapsed();
+        let (s, mut ms, mut us) = (
+            duration.as_secs(),
+            duration.as_millis(),
+            duration.as_micros(),
+        );
+        us -= ms * 1000;
+        ms -= s as u128 * 1000;
+        println!(
+            "Hi! before BP protocol running time: {} s {} ms {} us",
+            s, ms, us
+        );
+        let now = Instant::now();
+        //? <<out-------------------------------test running time----------------------------------------------------
 
         (
             Pi_2_Proof {

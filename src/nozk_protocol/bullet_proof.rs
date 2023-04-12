@@ -28,6 +28,9 @@ impl BulletReductionProof {
         z_vec: &[Scalar],
         L_vec: &[Scalar],
     ) -> BulletReductionProof {
+        use std::time::Instant;
+        let now = Instant::now();
+
         let mut G = &mut G_vec.to_owned()[..];
         let mut z = &mut z_vec.to_owned()[..];
         let mut L = &mut L_vec.to_owned()[..];
@@ -48,14 +51,67 @@ impl BulletReductionProof {
         let mut A_vec: Vec<CompressedRistretto> = Vec::with_capacity(lg_n);
         let mut B_vec: Vec<CompressedRistretto> = Vec::with_capacity(lg_n);
 
+        //? >>>in------------------------------test running time-----------------------------------------------------
+        let duration = now.elapsed();
+        let (s, mut ms, mut us) = (
+            duration.as_secs(),
+            duration.as_millis(),
+            duration.as_micros(),
+        );
+        us -= ms * 1000;
+        ms -= s as u128 * 1000;
+        println!(
+            "Hi! before BP's divide and conquer running time: {} s {} ms {} us",
+            s, ms, us
+        );
+        let now = Instant::now();
+        //? <<out-------------------------------test running time----------------------------------------------------
+
         while n != 2 {
+            //? >>>in------------------------------test running time-----------------------------------------------------
+            println!("n: {}", &n);
+            let nownow = Instant::now();
+            //? <<out-------------------------------test running time----------------------------------------------------
+
             n /= 2;
             let (z_L, z_R) = z.split_at_mut(n);
             let (L_L, L_R) = L.split_at_mut(n);
             let (G_L, G_R) = G.split_at_mut(n);
 
+            //? >>>in------------------------------test running time-----------------------------------------------------
+            let duration = nownow.elapsed();
+            let (s, mut ms, mut us) = (
+                duration.as_secs(),
+                duration.as_millis(),
+                duration.as_micros(),
+            );
+            us -= ms * 1000;
+            ms -= s as u128 * 1000;
+            println!(
+                "Hi! div-conq's zLG split running time: {} s {} ms {} us",
+                s, ms, us
+            );
+            let nownow = Instant::now();
+            //? <<out-------------------------------test running time----------------------------------------------------
+
             let c_L = inner_product(&z_L, &L_R);
             let c_R = inner_product(&z_R, &L_L);
+
+            //? >>>in------------------------------test running time-----------------------------------------------------
+            let duration = nownow.elapsed();
+            let (s, mut ms, mut us) = (
+                duration.as_secs(),
+                duration.as_millis(),
+                duration.as_micros(),
+            );
+            us -= ms * 1000;
+            ms -= s as u128 * 1000;
+            println!(
+                "Hi! div-conq's c inner product running time: {} s {} ms {} us",
+                s, ms, us
+            );
+            let nownow = Instant::now();
+            //? <<out-------------------------------test running time----------------------------------------------------
 
             let A = GroupElement::vartime_multiscalar_mul(
                 z_L.iter().chain(iter::once(&c_L)),
@@ -67,6 +123,22 @@ impl BulletReductionProof {
                 z_R.iter().chain(iter::once(&c_R)),
                 G_L.iter().chain(iter::once(k)),
             );
+
+            //? >>>in------------------------------test running time-----------------------------------------------------
+            let duration = nownow.elapsed();
+            let (s, mut ms, mut us) = (
+                duration.as_secs(),
+                duration.as_millis(),
+                duration.as_micros(),
+            );
+            us -= ms * 1000;
+            ms -= s as u128 * 1000;
+            println!(
+                "Hi! div-conq's A,B calculation running time: {} s {} ms {} us",
+                s, ms, us
+            );
+            let nownow = Instant::now();
+            //? <<out-------------------------------test running time----------------------------------------------------
 
             transcript.append_point(b"L", &A.compress());
             transcript.append_point(b"R", &B.compress());
@@ -80,13 +152,61 @@ impl BulletReductionProof {
                     GroupElement::vartime_multiscalar_mul(&[c, Scalar::one()], &[G_L[i], G_R[i]]);
             }
 
+            //? >>>in------------------------------test running time-----------------------------------------------------
+            let duration = nownow.elapsed();
+            let (s, mut ms, mut us) = (
+                duration.as_secs(),
+                duration.as_millis(),
+                duration.as_micros(),
+            );
+            us -= ms * 1000;
+            ms -= s as u128 * 1000;
+            println!(
+                "Hi! div-conq's zLG compress running time: {} s {} ms {} us",
+                s, ms, us
+            );
+            let nownow = Instant::now();
+            //? <<out-------------------------------test running time----------------------------------------------------
+
             A_vec.push(A.compress());
             B_vec.push(B.compress());
 
             z = z_L;
             L = L_L;
             G = G_L;
+
+            //? >>>in------------------------------test running time-----------------------------------------------------
+            let duration = nownow.elapsed();
+            let (s, mut ms, mut us) = (
+                duration.as_secs(),
+                duration.as_millis(),
+                duration.as_micros(),
+            );
+            us -= ms * 1000;
+            ms -= s as u128 * 1000;
+            println!(
+                "Hi! div-conq's transfer zLG_L -> zLG running time: {} s {} ms {} us",
+                s, ms, us
+            );
+            let nownow = Instant::now();
+            //? <<out-------------------------------test running time----------------------------------------------------
         }
+
+        //? >>>in------------------------------test running time-----------------------------------------------------
+        let duration = now.elapsed();
+        let (s, mut ms, mut us) = (
+            duration.as_secs(),
+            duration.as_millis(),
+            duration.as_micros(),
+        );
+        us -= ms * 1000;
+        ms -= s as u128 * 1000;
+        println!(
+            "Hi! BP's div and conq running time: {} s {} ms {} us",
+            s, ms, us
+        );
+        let now = Instant::now();
+        //? <<out-------------------------------test running time----------------------------------------------------
 
         assert_eq!(z.len(), 2);
 
