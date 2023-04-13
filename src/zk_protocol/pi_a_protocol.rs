@@ -37,11 +37,80 @@ impl Pi_Affine_Proof {
         assert_eq!(gens.gens_n.n, n);
 
         let rho = transcript.challenge_scalar(b"rho");
+
+        //? >>>in-------------------------------test running time-----------------------------------------------------
+        let duration = now.elapsed();
+        let (ss, mut ms, mut us) = (
+            duration.as_secs(),
+            duration.as_millis(),
+            duration.as_micros(),
+        );
+        us -= ms * 1000;
+        ms -= ss as u128 * 1000;
+        println!(
+            "Hi! generate challenge rho running time: {} s {} ms {} us",
+            ss, ms, us
+        );
+        //? <<out-------------------------------test running time-----------------------------------------------------
+
         let rho_vec = scalar_math::vandemonde_challenge_one(rho, s);
+
+        //? >>>in-------------------------------test running time-----------------------------------------------------
+        let duration = now.elapsed();
+        let (s, mut ms, mut us) = (
+            duration.as_secs(),
+            duration.as_millis(),
+            duration.as_micros(),
+        );
+        us -= ms * 1000;
+        ms -= s as u128 * 1000;
+        println!("Hi! rho vec running time: {} s {} ms {} us", s, ms, us);
+        //? <<out-------------------------------test running time-----------------------------------------------------
+
         let l_matric_t = scalar_math::matrix_transpose(&l_matric);
+
+        //? >>>in-------------------------------test running time-----------------------------------------------------
+        let duration = now.elapsed();
+        let (s, mut ms, mut us) = (
+            duration.as_secs(),
+            duration.as_millis(),
+            duration.as_micros(),
+        );
+        us -= ms * 1000;
+        ms -= s as u128 * 1000;
+        println!("Hi! transpose running time: {} s {} ms {} us", s, ms, us);
+        //? <<out-------------------------------test running time-----------------------------------------------------
+
         let l_vec = scalar_math::matrix_vector_mul(&l_matric_t, &rho_vec);
 
+        //? >>>in-------------------------------test running time-----------------------------------------------------
+        let duration = now.elapsed();
+        let (s, mut ms, mut us) = (
+            duration.as_secs(),
+            duration.as_millis(),
+            duration.as_micros(),
+        );
+        us -= ms * 1000;
+        ms -= s as u128 * 1000;
+        println!("Hi! M * rho_vec running time: {} s {} ms {} us", s, ms, us);
+        //? <<out-------------------------------test running time-----------------------------------------------------
+
         let y = scalar_math::compute_linearform(&l_vec, &x_vec);
+
+        //? >>>in-------------------------------test running time-----------------------------------------------------
+        let duration = now.elapsed();
+        let (s, mut ms, mut us) = (
+            duration.as_secs(),
+            duration.as_millis(),
+            duration.as_micros(),
+        );
+        us -= ms * 1000;
+        ms -= s as u128 * 1000;
+        println!(
+            "Hi! compressed L_vec running time: {} s {} ms {} us",
+            s, ms, us
+        );
+        //? <<out-------------------------------test running time-----------------------------------------------------
 
         let (proof, P, P_hat) = Pi_c_Proof::prove(
             &gens,
