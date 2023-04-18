@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+#![allow(non_camel_case_types)]
 use crate::commitments::{DotProductProofGens, MultiCommitGens};
 use crate::curve25519::errors::ProofVerifyError;
 use crate::curve25519::group::{CompressedGroup, CompressedGroupExt, GROUP_BASEPOINT};
@@ -39,9 +41,6 @@ impl Pi_c_Proof {
         let n = x_vec.len();
         assert_eq!(l_vec.len(), n);
         assert_eq!(gens.gens_n.n, n);
-
-        use std::time::Instant;
-        let now = Instant::now();
 
         let (proof_0, P, z_vec, phi) = Pi_0_Proof::mod_prove(
             transcript,

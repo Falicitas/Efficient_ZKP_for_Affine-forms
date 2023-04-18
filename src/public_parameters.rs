@@ -1,15 +1,8 @@
-use crate::curve25519::errors::ProofVerifyError;
-use crate::curve25519::group::{
-    CompressedGroup, CompressedGroupExt, GroupElement, VartimeMultiscalarMul,
-    GROUP_BASEPOINT_COMPRESSED,
-};
+#![allow(dead_code)]
+use crate::curve25519::group::{GroupElement, GROUP_BASEPOINT_COMPRESSED};
 use crate::curve25519::scalar::Scalar;
-use crate::curve25519::scalar_math;
-use digest::{ExtendableOutput, Input};
-use lazy_static;
-use merlin::Transcript;
+use digest::Input;
 use serde::{Deserialize, Serialize};
-use serde_json::Result;
 use sha3::Shake256;
 use std::fs;
 //TODO: rewrite as input_trait
@@ -58,7 +51,7 @@ fn input_init(input: &Input_) -> (usize, usize, Vec<Vec<Scalar>>, Vec<Scalar>, V
     (
         input.n,
         input.s,
-        input.M_matric.clone(), //TODO: 二维 clone 会出问题吗
+        input.M_matric.clone(),
         input.b_vec.clone(),
         input.x_vec.clone(),
     )
@@ -69,9 +62,8 @@ pub fn new_gens() {
     shake.input("label");
     shake.input(GROUP_BASEPOINT_COMPRESSED.as_bytes());
 
-    let mut reader = shake.xof_result();
     let mut gens: Vec<GroupElement> = Vec::new();
-    let mut uniform_bytes = [0u8; 64];
+    let uniform_bytes = [0u8; 64];
     for _ in 0..256 {
         gens.push(GroupElement::from_uniform_bytes(&uniform_bytes));
     }
@@ -79,7 +71,6 @@ pub fn new_gens() {
 
 pub mod Pub_Param_Affine_forms {
     use crate::curve25519::scalar::Scalar;
-    #[macro_use]
     lazy_static::lazy_static! {
 
         pub static ref INPUT: super::Input_ = super::file_input();

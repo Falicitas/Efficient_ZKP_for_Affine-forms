@@ -84,7 +84,7 @@ impl Commitments for [Scalar] {
 }
 
 pub struct DotProductProofGens {
-    n: usize,
+    // n: usize,
     pub gens_n: MultiCommitGens,
     pub gens_1: MultiCommitGens,
 }
@@ -92,6 +92,6 @@ pub struct DotProductProofGens {
 impl DotProductProofGens {
     pub fn new(n: usize, label: &[u8]) -> Self {
         let (gens_n, gens_1) = MultiCommitGens::new(n + 1, label).split_at(n);
-        DotProductProofGens { n, gens_n, gens_1 }
+        DotProductProofGens { gens_n, gens_1 }
     }
 }

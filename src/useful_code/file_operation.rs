@@ -22,18 +22,18 @@ fn main() {
     )
     .unwrap();
 
-    //一个 json 文件只放一个结构体
+    //one json file, one json data
 
     let p: Q = serde_json::from_str(&fs::read_to_string(path).unwrap()).unwrap();
 
-    println!("{}", p.name); // hell
+    println!("{}", p.name);
 
     // use std::fs::OpenOptions;
     // let mut file = OpenOptions::new()
     //         .read(true)
     //         .write(true)
     //         .create(true)
-    //         .append(true)//往后文件追加
+    //         .append(true)// append after file
     //         .open(path).unwrap();
     // file.write_all(txt.as_bytes());
 }

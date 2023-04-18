@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+#![allow(non_camel_case_types)]
 use merlin::Transcript;
 use serde::{Deserialize, Serialize};
 use serde_json;
@@ -19,7 +21,6 @@ pub struct Raw {
 pub struct X {
     x_vec: Vec<Scalar>,
 }
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Proof_and_Commitments {
     proof: Pi_Affine_Proof,
@@ -30,14 +31,12 @@ pub struct Proof_and_Commitments {
 
 fn singleton_test(suffix_path: String) {
     use std::time::Instant;
-
     let now = Instant::now();
 
-    let infix_path = "./random_data/1e9_1000_5".to_owned();
+    let infix_path = "./random_data/1e9_1000_5/".to_owned();
 
-    let raw_path = infix_path.to_owned() + &"/raw_".to_owned() + &suffix_path;
-
-    let proof_path = infix_path.to_owned() + &"/proof_".to_owned() + &suffix_path;
+    let raw_path = infix_path.to_owned() + &"raw_".to_owned() + &suffix_path;
+    let proof_path = infix_path.to_owned() + &"proof_".to_owned() + &suffix_path;
 
     let disk_raw: Raw = serde_json::from_str(&fs::read_to_string(raw_path).unwrap()).unwrap();
     let disk_proof: Proof_and_Commitments =
@@ -75,9 +74,9 @@ fn singleton_test(suffix_path: String) {
 
     let n = m_matric[0].len();
 
-    // FS for once-and-for-all proof
-
     let gens = DotProductProofGens::new(n, b"gens");
+
+    // Setup stage complete.
 
     let mut verifier_transcript = Transcript::new(b"Kinesis's protocol");
 
@@ -108,9 +107,13 @@ fn singleton_test(suffix_path: String) {
 }
 
 fn main() {
-    for i in 0..10 {
+    let test_total = 10;
+    for i in 0..test_total {
         println!("----------------------------------------singleton_test----------------------------------------");
         singleton_test(i.to_string() + &".in".to_owned());
-        println!("test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured.");
     }
+    println!(
+        "test result: ok. {} passed; 0 failed; 0 ignored; 0 measured.",
+        test_total
+    );
 }

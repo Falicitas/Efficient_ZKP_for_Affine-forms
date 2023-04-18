@@ -1,10 +1,16 @@
+#![allow(non_snake_case)]
+#![allow(non_camel_case_types)]
 use rand::rngs::OsRng;
 use rand::{CryptoRng, RngCore};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use Efficient_ZKP_for_Affine_forms::curve25519::scalar::Scalar;
 use Efficient_ZKP_for_Affine_forms::curve25519::scalar_math;
+
 const MOD: u64 = 1_000_000_000;
+// restrain matrix and x_vec Scalar's value.
+// but since calculation is in modular system, value range in initial data does not matter anymore.
+// it suits for comparison with other ZK-protocol with data constrain.
 
 fn random_in_1e9<Rng: RngCore + CryptoRng>(rng: &mut Rng) -> u64 {
     rng.next_u64() % MOD

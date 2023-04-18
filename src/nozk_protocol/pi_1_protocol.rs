@@ -5,7 +5,7 @@ use crate::curve25519::scalar_math;
 use crate::transcript::{AppendToTranscript, ProofTranscript};
 use merlin::Transcript;
 use serde::{Deserialize, Serialize};
-
+#[allow(non_camel_case_types)]
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Pi_1_Proof {}
 
