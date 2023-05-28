@@ -6,5 +6,6 @@ mod math;
 mod nozk_protocol;
 mod public_parameters;
 pub mod random;
+pub mod runtime;
 pub mod transcript;
 pub mod zk_protocol;

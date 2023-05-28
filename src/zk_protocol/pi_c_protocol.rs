@@ -20,6 +20,10 @@ pub struct Pi_c_Proof {
 }
 
 impl Pi_c_Proof {
+    pub fn siz(&self) -> usize {
+        self.proof_0.siz() + self.proof_1.siz() + self.proof_2.siz()
+    }
+
     fn protocol_name() -> &'static [u8] {
         b"zk compressed pi_c proof"
     }

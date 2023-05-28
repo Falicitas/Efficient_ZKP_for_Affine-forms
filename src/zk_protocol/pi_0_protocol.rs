@@ -14,6 +14,10 @@ pub struct Pi_0_Proof {
 }
 
 impl Pi_0_Proof {
+    pub fn siz(&self) -> usize {
+        use std::mem;
+        mem::size_of::<Pi_0_Proof>()
+    }
     fn protocol_name() -> &'static [u8] {
         b"pi_0_proof"
     }

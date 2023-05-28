@@ -16,6 +16,9 @@ pub struct Pi_2_Proof {
 }
 
 impl Pi_2_Proof {
+    pub fn siz(&self) -> usize {
+        self.bullet_reduction_proof.siz()
+    }
     fn protocol_name() -> &'static [u8] {
         b"pi_2 proof"
     }

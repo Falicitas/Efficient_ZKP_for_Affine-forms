@@ -36,7 +36,8 @@ fn write_to_file<T: Serialize>(path: String, object: T) {
 }
 
 pub fn generator(suffix_path: String) {
-    let infix_path = "./random_data/1e9_100000_5".to_owned();
+    let infix_path = "./random_data/1e9_100000_50".to_owned();
+
     // Scalar range in [0,1e9), and n range in {10},s range in {5}
 
     let raw_file_path = infix_path.to_owned() + &"/raw_".to_owned() + &suffix_path;
@@ -46,7 +47,7 @@ pub fn generator(suffix_path: String) {
     let mut csprng: OsRng = OsRng;
 
     let n = 100000;
-    let s = 5;
+    let s = 50;
 
     let mut m_matric: Vec<Vec<Scalar>> = Vec::new();
     let mut m_hat_matric: Vec<Vec<Scalar>> = Vec::new();

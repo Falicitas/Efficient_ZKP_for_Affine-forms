@@ -10,6 +10,9 @@ use serde::{Deserialize, Serialize};
 pub struct Pi_1_Proof {}
 
 impl Pi_1_Proof {
+    pub fn siz(&self) -> usize {
+        0
+    }
     fn protocol_name() -> &'static [u8] {
         b"pi_1_proof"
     }

@@ -40,6 +40,7 @@ impl Proof_and_Commitments {
 }
 
 fn singleton_test(suffix_path: String) {
+    //TODO: Compress FS using the seed of transcript
     use std::time::Instant;
     let mut now = Instant::now();
 

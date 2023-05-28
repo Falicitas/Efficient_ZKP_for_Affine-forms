@@ -20,6 +20,12 @@ pub struct BulletReductionProof {
 }
 
 impl BulletReductionProof {
+    pub fn siz(&self) -> usize {
+        use std::mem;
+        mem::size_of::<BulletReductionProof>()
+            + mem::size_of::<CompressedGroup>() * (self.A_vec.len() + self.B_vec.len())
+            + mem::size_of::<Scalar>() * self.z.len()
+    }
     pub fn prove(
         transcript: &mut Transcript,
         k: &GroupElement,
