@@ -4,22 +4,22 @@ Practical work for the implementation of *[Compressed sigma-Protocol Theory and 
 
 Authors of the paper reconcile Bulletproofs with the theory of $\Sigma$-Protocols such that (a) applications can follow (established) cryptographic protocol theory, thereby dispensing with the need for "reinventing" it, while (b) enjoying exactly the same communication reduction. They do this by giving a precise perspective on BPs as a significant strengthening of the power of $\Sigma$-protocols, resulting in $\Pi_c$ protocol. By using $\Pi_c$ protocol as a black box, efficient zero-knowledge arguments for arbitrary arithmetic circuits materialize. 
 
-The purpose of this library is to solve such problems in a uniform and standardized way: for arbitrary linear equations of the form Y = AX, with X private to P, the matrix A and vector Y is public (vector Y has lower dimension than vector X), where P proves that X satisfies the affine property without revealing any knowledge about X. 
+The purpose of this Repo is to solve such problems in an efficient and standardized way: For arbitrary linear equations of the form Y = AX, with X private to P, the matrix A and vector Y is public (vector Y has lower dimension than vector X), where P proves that X satisfies the affine property without revealing any knowledge about X. 
 
 Here, $\Pi_c$ protocol is sufficient to fit the purpose. The security assumption of the protocol is $\mathcal{D}_n-\text { Find - Rep }^{[1]}$. See section 4.3 for detail of the zero-knowledge property of the protocol.
 
 Why write it:
 
-- The existing open-source projects with related implementations suffer from the Weak Fiat-Shamir Transformation problem.
-- No specific practice of this scenario could be found on the web.
-- The paper only describes the core algorithm logic and does not give design recommendations for other engineering-time practices and extensions such as the initial setup of the Setup phase FS.
-- Zero-knowledge proofs of various equations or relations are used to support the protocol Multiparty Confidential Computing (MPC), which is practically used in various fields such as big data analysis, privacy machine learning, etc. The protocol is one of the fundamental sub-protocols of MPC.
+- The existing open-source projects with the related implementations suffer from Weak Fiat-Shamir Transformation problem.
+- No specific practice of this scenario could be found on the Web.
+- The paper only describes the theoretical algorithm and does not demonstrate design recommendations for engineering practice and extensions such as FS transformation.
+- Zero-knowledge proofs of various equations are used to support Multi-party Confidential Computing (MPC), which is practically used in various fields such as big data analysis, privacy machine learning, etc. The protocol is one of the fundamental sub-protocols of MPC.
 
 ## Reference in engineering
 
 Discrete Logarithmic assumption uses [curve25519-dalek]([curve25519-dalek/src at main · dalek-cryptography/curve25519-dalek (github.com)](https://github.com/dalek-cryptography/curve25519-dalek/tree/main/src)).
 
-NIZK、Scalar implementation refers to [Spartan]([microsoft/Spartan: Spartan: High-speed zkSNARKs without trusted setup (github.com)](https://github.com/microsoft/Spartan)) repo. Use [ristretto255]([Spartan/ristretto255.rs at master · microsoft/Spartan (github.com)](https://github.com/microsoft/Spartan/blob/master/src/scalar/ristretto255.rs)) to avoid small subgroup attacks caused by the EC group of curve25519 not being with prime order.
+NIZK and Scalar implementation refers to [Spartan]([microsoft/Spartan: Spartan: High-speed zkSNARKs without trusted setup (github.com)](https://github.com/microsoft/Spartan)) Repo. Use [ristretto255]([Spartan/ristretto255.rs at master · microsoft/Spartan (github.com)](https://github.com/microsoft/Spartan/blob/master/src/scalar/ristretto255.rs)) to avoid small subgroup attacks caused by the EC group of curve25519 not being with prime order.
 
 [Compressed_sigma-protocol](https://github.com/3for/Compressed_sigma-protocol) for reference of the modular design of the protocol.
 
@@ -27,19 +27,21 @@ NIZK、Scalar implementation refers to [Spartan]([microsoft/Spartan: Spartan: Hi
 
 build environment: Windows/Linux, rustc 1.63.0+, cargo 1.63.0+
 
-There are three binary crates under [Efficient_ZKP_for_Affine-forms/src/bin]([Efficient_ZKP_for_Affine-forms/src/bin at master · Falicitas/Efficient_ZKP_for_Affine-forms (github.com)](https://github.com/Falicitas/Efficient_ZKP_for_Affine-forms/tree/master/src/bin)), which can be considered as Prover-end interface, Verifier-end interface, and randomly generated verification data interface respectively.
+There are five binary crates under [Efficient_ZKP_for_Affine-forms/src/bin]([Efficient_ZKP_for_Affine-forms/src/bin at master · Falicitas/Efficient_ZKP_for_Affine-forms (github.com)](https://github.com/Falicitas/Efficient_ZKP_for_Affine-forms/tree/master/src/bin)), which can be considered respectively as Prover-end interface, Verifier-end interface, and randomly generated verification data interface.
 
 run the bash command:
 
 ```bash
 cargo run --package Efficient_ZKP_for_Affine-forms --bin verify_full_test
-
 cargo run --package Efficient_ZKP_for_Affine-forms --bin prove_full_test
+
+cargo run --package Efficient_ZKP_for_Affine-forms --bin verify_compressed_test
+cargo run --package Efficient_ZKP_for_Affine-forms --bin prove_compressed_test
 
 cargo run --package Efficient_ZKP_for_Affine-forms --bin raw_-_-_-_generator
 ```
 
-> The three bars of raw - are the three parameters of the data. The data range can be adjusted according to the actual scenario.
+> The four bars of raw _ means four parameters of the data. The data range can be adjusted according to the actual scenario.
 >
 > The data description is mentioned in the "Data Format" below.
 
@@ -271,7 +273,6 @@ But dealing with IO/parse is not the focus of this project.
 ## Reference
 
 [1]: DAZA V, RÀFOLS C, ZACHARAKIS A. Updateable inner product argument with logarithmic verifier and applications[C]. In: Public-Key Cryptography—PKC 2020, Part I. Springer Cham, 2020: 527–557. [DOI: 10.1007/978- 3-030-45374-9_18]
-
 
 
 
